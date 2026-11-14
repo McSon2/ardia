@@ -21,6 +21,14 @@ NSWindowCollectionBehavior JoiningFullScreenSpace(NSWindowCollectionBehavior beh
   return (behavior & ~NSWindowCollectionBehaviorFullScreenPrimary) | NSWindowCollectionBehaviorFullScreenAuxiliary;
 }
 
+NSWindow *_Nullable FrontWindowOfProfile(ArdiaCoreProfile *profile) {
+  for (NSWindow *window in NSApp.orderedWindows) {
+    ArdiaWindowController *c = [ArdiaWindowController forNSWindow:window];
+    if (c && !c.stray && c.coreWindow.activeProfile == profile) return window;
+  }
+  return nil;
+}
+
 NSMutableSet<ArdiaPopupWindow *> *PopupWindows() {
   static NSMutableSet *windows = [NSMutableSet set];
   return windows;
@@ -403,7 +411,7 @@ ArdiaCoreWindow *PopupWindowForChromeBrowser(ArdiaCoreProfile *profile) {
 }
 
 void ChromeMakesAppWindow(ArdiaCoreProfile *profile) {
-  gChromeAppWindowJoinsFullScreenSpace = IsWindowFullScreen([ArdiaWindowController hostingViewForProfile:profile].window);
+  gChromeAppWindowJoinsFullScreenSpace = IsWindowFullScreen(FrontWindowOfProfile(profile));
   dispatch_async(dispatch_get_main_queue(), ^{ gChromeAppWindowJoinsFullScreenSpace = NO; });
 }
 
