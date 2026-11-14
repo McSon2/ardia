@@ -142,7 +142,7 @@ Examples:
 COMMANDS = {
     "open": "ardia browse open [url] [--enable react-devtools] [--init-script <path>] [--capture-console] [--label name]\n\n"
             "Without a tab, opens a new background tab in Ardia's sidebar (the user's own tab is never navigated\n"
-            "unless the session picked it with `tab <id>`). When the session was using the user's tab, the answer\n"
+            "unless the session picked it with `tab <id>`). When the session was using the user's tab (`tab active`), the answer\n"
             "names both: `→ [t4] is this session's tab now …; `tab t3` goes back`. Later opens navigate the\n"
             "session's tab. A URL without a\n"
             "scheme gets https:// (http:// for localhost). Prints the title and URL, then the page it landed on as a\n"
@@ -221,7 +221,10 @@ COMMANDS = {
            "list shows the user's tabs too, with the tab-… id `ardia windows` prints when the address pairs them\n"
            "up, and which session opened or uses each. A t1 id is the same in every session and never moves to\n"
            "another tab. Switching changes which tab this session acts on, not what Ardia shows (--show does).\n"
-           "`tab active` picks the tab the user is looking at. close only closes tabs this session opened, and\n"
+           "A session never takes the user's tab on its own: until it opens or picks one, commands that need a\n"
+           "page fail with no_session_tab. `tab active` picks the tab the user is looking at; the session works\n"
+           "in it but won't navigate it (open goes to a background tab of its own) unless picked by id. close only\n"
+           "closes tabs this session opened, and\n"
            "not one another session is using. When Ardia swaps a tab's page (it slept, or crashed and reloaded),\n"
            "the session follows it to the new page.",
     "console": "ardia browse console [--clear]\n\nThe first call turns on the Runtime domain for the session's tab (Chrome then replays earlier\n"
